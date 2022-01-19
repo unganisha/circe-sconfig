@@ -16,7 +16,7 @@
 package io.circe
 
 import org.ekrich.config._
-import config.compat.converters._
+import scala.jdk.CollectionConverters._
 
 /**
  * circe-config: A [[https://github.com/lightbend/config Typesafe config]] wrapper powered by [[io.circe circe]].

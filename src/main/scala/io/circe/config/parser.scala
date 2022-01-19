@@ -23,7 +23,7 @@ import cats.syntax.bifunctor._
 import cats.instances.either._
 import java.io.File
 
-import compat.converters._
+import scala.jdk.CollectionConverters._
 import org.ekrich.config._
 
 /**
