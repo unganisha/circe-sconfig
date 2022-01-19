@@ -33,7 +33,7 @@ automatically derive decoders. They load the configuration found in
 [application.conf].
 
 ```scala
-scala> import com.typesafe.config.{ ConfigFactory, ConfigMemorySize }
+scala> import org.ekrich.config.{ ConfigFactory, ConfigMemorySize }
 scala> import io.circe.generic.auto._
 scala> import io.circe.config.syntax._
 scala> import scala.concurrent.duration.FiniteDuration

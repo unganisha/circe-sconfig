@@ -17,7 +17,7 @@ package io.circe
 package config
 
 import cats.ApplicativeError
-import com.typesafe.config.{parser => _, _}
+import org.ekrich.config.{parser => _, _}
 import cats.instances.either._
 import cats.syntax.either._
 import cats.syntax.bifunctor._
@@ -37,7 +37,7 @@ import java.time.Period
  * scala> import io.circe.config.syntax._
  * scala> import scala.concurrent.duration.FiniteDuration
  * scala> case class ServerSettings(port: Int, host: String, timeout: FiniteDuration)
- * scala> val config = com.typesafe.config.ConfigFactory.parseString("port = 7357, host = localhost, timeout = 5 s")
+ * scala> val config = org.ekrich.config.ConfigFactory.parseString("port = 7357, host = localhost, timeout = 5 s")
  * scala> config.as[ServerSettings]
  * res0: Either[io.circe.Error, ServerSettings] = Right(ServerSettings(7357,localhost,5 seconds))
  * }}}
@@ -94,13 +94,13 @@ object syntax {
   /**
    * Decoder for reading
    * [[https://github.com/lightbend/config/blob/master/HOCON.md#size-in-bytes-format size in bytes format]] into a
-   * [[https://lightbend.github.io/config/latest/api/com/typesafe/config/ConfigMemorySize.html com.typesafe.config.ConfigMemorySize]].
+   * [[https://lightbend.github.io/config/latest/api/com/typesafe/config/ConfigMemorySize.html org.ekrich.config.ConfigMemorySize]].
    *
    * @example
    * {{{
    * scala> import io.circe.Json
    * scala> import io.circe.config.syntax._
-   * scala> import com.typesafe.config.ConfigMemorySize
+   * scala> import org.ekrich.config.ConfigMemorySize
    *
    * scala> memorySizeDecoder.decodeJson(Json.fromString("128M"))
    * res0: io.circe.Decoder.Result[ConfigMemorySize] = Right(ConfigMemorySize(134217728))
@@ -119,14 +119,14 @@ object syntax {
 
   /**
    * Decoder for converting [[io.circe.Json]] to
-   * [[https://lightbend.github.io/config/latest/api/com/typesafe/config/ConfigValue.html com.typesafe.config.ConfigValue]].
+   * [[https://lightbend.github.io/config/latest/api/com/typesafe/config/ConfigValue.html org.ekrich.config.ConfigValue]].
    *
    * Maps any circe JSON AST to the Typesafe Config AST.
    *
    * @example
    * {{{
    * scala> import io.circe.Json
-   * scala> import com.typesafe.config.ConfigValue
+   * scala> import org.ekrich.config.ConfigValue
    * scala> import io.circe.config.syntax._
    *
    * scala> val hostJson = Json.fromString("localhost")
@@ -152,14 +152,14 @@ object syntax {
 
   /**
    * Decoder for converting [[io.circe.Json]] to
-   * [[https://lightbend.github.io/config/latest/api/com/typesafe/config/Config.html com.typesafe.config.Config]].
+   * [[https://lightbend.github.io/config/latest/api/com/typesafe/config/Config.html org.ekrich.config.Config]].
    *
    * Converts a circe JSON object to a Typesafe Config instance.
    *
    * @example
    * {{{
    * scala> import io.circe.Json
-   * scala> import com.typesafe.config.Config
+   * scala> import org.ekrich.config.Config
    * scala> import io.circe.config.syntax._
    *
    * scala> val hostJson = Json.fromString("localhost")
@@ -187,7 +187,7 @@ object syntax {
 
   /**
    * Enriches
-   * [[https://lightbend.github.io/config/latest/api/com/typesafe/config/Config.html com.typesafe.config.Config]]
+   * [[https://lightbend.github.io/config/latest/api/com/typesafe/config/Config.html org.ekrich.config.Config]]
    * instances with methods to decode to a specific type.
    */
   implicit class CirceConfigOps(val config: Config) extends AnyVal {

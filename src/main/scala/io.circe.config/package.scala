@@ -15,7 +15,7 @@
  */
 package io.circe
 
-import com.typesafe.config._
+import org.ekrich.config._
 import config.compat.converters._
 
 /**
@@ -31,7 +31,7 @@ import config.compat.converters._
  *
  * @example
  * {{{
- * scala> import com.typesafe.config.ConfigFactory
+ * scala> import org.ekrich.config.ConfigFactory
  * scala> import io.circe.generic.auto._
  * scala> import io.circe.config.syntax._
  *
@@ -65,11 +65,11 @@ package object config {
   private[config] def jsonToConfigValue(json: Json): ConfigValue =
     json.fold(
       ConfigValueFactory.fromAnyRef(null),
-      boolean => ConfigValueFactory.fromAnyRef(boolean),
+      boolean => ConfigValueFactory.fromAnyRef(Predef.boolean2Boolean(boolean)),
       number =>
         number.toLong match {
-          case Some(long) => ConfigValueFactory.fromAnyRef(long)
-          case None       => ConfigValueFactory.fromAnyRef(number.toDouble)
+          case Some(long) => ConfigValueFactory.fromAnyRef(Predef.long2Long(long))
+          case None       => ConfigValueFactory.fromAnyRef(Predef.double2Double(number.toDouble))
         },
       str => ConfigValueFactory.fromAnyRef(str),
       arr => ConfigValueFactory.fromIterable(arr.map(jsonToConfigValue).asJava),

@@ -16,7 +16,7 @@
 package io.circe
 package config
 
-import com.typesafe.config._
+import org.ekrich.config._
 
 /**
  * Print [[io.circe.Json]] to a Typesafe Config string.
@@ -41,7 +41,7 @@ object printer {
    * origin comments.
    *
    * @see
-   *   [[https://lightbend.github.io/config/latest/api/com/typesafe/config/ConfigRenderOptions.html com.typesafe.config.ConfigRenderOptions]]
+   *   [[https://lightbend.github.io/config/latest/api/com/typesafe/config/ConfigRenderOptions.html org.ekrich.config.ConfigRenderOptions]]
    */
   val DefaultOptions = ConfigRenderOptions.defaults.setJson(false).setOriginComments(false)
 

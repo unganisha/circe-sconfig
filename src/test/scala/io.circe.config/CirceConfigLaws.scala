@@ -9,7 +9,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.scalacheck.Checkers
 import org.scalacheck.{Arbitrary, Prop}
 import org.typelevel.discipline.Laws
-import com.typesafe.config.{parser => _, _}
+import org.ekrich.config.{parser => _, _}
 
 class CirceConfigLaws extends AnyFlatSpec {
 

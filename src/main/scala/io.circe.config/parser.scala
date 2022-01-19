@@ -24,11 +24,11 @@ import cats.instances.either._
 import java.io.File
 
 import compat.converters._
-import com.typesafe.config._
+import org.ekrich.config._
 
 /**
  * Utilities for parsing
- * [[https://lightbend.github.io/config/latest/api/com/typesafe/config/Config.html com.typesafe.config.Config]] sources
+ * [[https://lightbend.github.io/config/latest/api/com/typesafe/config/Config.html org.ekrich.config.Config]] sources
  * to [[io.circe.Json]] as well as decoding to a specific type.
  *
  * If you are working in something like [[https://typelevel.org/cats-effect/api/cats/effect/IO cats.effect.IO]], or some
@@ -36,7 +36,7 @@ import com.typesafe.config._
  *
  * @example
  * {{{
- * scala> import com.typesafe.config.ConfigFactory
+ * scala> import org.ekrich.config.ConfigFactory
  * scala> import io.circe.config.parser
  * scala> val config = ConfigFactory.parseString("server { host = localhost, port = 8080 }")
  *
@@ -60,7 +60,7 @@ import com.typesafe.config._
  *
  * @see
  *   [[syntax.configDecoder]] for how to map [[io.circe.Json]] to
- *   [[https://lightbend.github.io/config/latest/api/com/typesafe/config/Config.html com.typesafe.config.Config]]
+ *   [[https://lightbend.github.io/config/latest/api/com/typesafe/config/Config.html org.ekrich.config.Config]]
  */
 object parser extends Parser {
 
@@ -152,7 +152,7 @@ object parser extends Parser {
    * scala> case class HttpSettings(server: ServerSettings)
    * scala> case class AppSettings(http: HttpSettings)
    *
-   * scala> import com.typesafe.config.ConfigFactory
+   * scala> import org.ekrich.config.ConfigFactory
    * scala> val config = ConfigFactory.load()
    *
    * scala> parser.decode[AppSettings](config)
@@ -202,7 +202,7 @@ object parser extends Parser {
    * scala> import io.circe.generic.auto._
    * scala> case class ServerSettings(host: String, port: Int)
    *
-   * scala> import com.typesafe.config.ConfigFactory
+   * scala> import org.ekrich.config.ConfigFactory
    * scala> val config = ConfigFactory.load()
    *
    * scala> parser.decodePath[ServerSettings](config, "http.server")
@@ -262,7 +262,7 @@ object parser extends Parser {
    * scala> case class HttpSettings(server: ServerSettings)
    * scala> case class AppSettings(http: HttpSettings)
    *
-   * scala> import com.typesafe.config.ConfigFactory
+   * scala> import org.ekrich.config.ConfigFactory
    * scala> val config = ConfigFactory.load()
    *
    * scala> import cats.effect.IO
@@ -281,7 +281,7 @@ object parser extends Parser {
    * scala> import io.circe.generic.auto._
    * scala> case class ServerSettings(host: String, port: Int)
    *
-   * scala> import com.typesafe.config.ConfigFactory
+   * scala> import org.ekrich.config.ConfigFactory
    * scala> val config = ConfigFactory.load()
    *
    * scala> import cats.effect.IO
