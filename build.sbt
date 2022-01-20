@@ -125,23 +125,11 @@ scalacOptions ++= Seq(
   "-language:postfixOps",
   "-language:higherKinds",
   "-unchecked",
+  "-Xfatal-warnings",
   "-Ywarn-dead-code",
   "-Ywarn-numeric-widen",
   "-Ywarn-unused:imports"
 )
-
-scalacOptions ++= {
-  CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((2, 12)) =>
-      Seq(
-        "-Xfatal-warnings",
-        "-Yno-adapted-args",
-        "-Xfuture"
-      )
-    case _ =>
-      Nil
-  }
-}
 
 Compile / console / scalacOptions --= Seq("-Ywarn-unused-import", "-Ywarn-unused:imports")
 Test / console / scalacOptions := (Compile / console / scalacOptions).value

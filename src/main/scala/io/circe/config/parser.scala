@@ -67,7 +67,7 @@ object parser extends Parser {
   private[this] final def toJson(parseConfig: => Config, path: Option[String] = None): Either[ParsingFailure, Json] = {
     def convertValueUnsafe(value: ConfigValue): Json = value match {
       case obj: ConfigObject =>
-        Json.fromFields(obj.asScala.mapValues(convertValueUnsafe))
+        Json.fromFields(obj.asScala.view.mapValues(convertValueUnsafe))
 
       case list: ConfigList =>
         Json.fromValues(list.asScala.map(convertValueUnsafe))
