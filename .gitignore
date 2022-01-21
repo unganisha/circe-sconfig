@@ -1,3 +1,6 @@
-target
-*.swp
+out/
+target/
 .bsp/
+.idea/
+*.swp
+*.iml
