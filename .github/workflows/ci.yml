@@ -20,10 +20,12 @@ jobs:
   build:
     name: Build and Test
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        scala: [2.12.15, 2.13.8]
-        java: [adopt@1.8]
+        scala: [2.13.8]
+        java: [graal_21.3.0@11, graal_21.3.0@17]
+        platform: [jvm, js]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout current branch (full)
@@ -31,10 +33,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Java and Scala
-        uses: olafurpg/setup-scala@v13
+      - name: Setup GraalVM (graal_21.3.0@11)
+        if: matrix.java == 'graal_21.3.0@11'
+        uses: DeLaGuardo/setup-graalvm@5.0
         with:
-          java-version: ${{ matrix.java }}
+          graalvm: 21.3.0
+          java: java11
+
+      - name: Setup GraalVM (graal_21.3.0@17)
+        if: matrix.java == 'graal_21.3.0@17'
+        uses: DeLaGuardo/setup-graalvm@5.0
+        with:
+          graalvm: 21.3.0
+          java: java17
 
       - name: Cache sbt
         uses: actions/cache@v2
@@ -48,10 +59,34 @@ jobs:
             ~/Library/Caches/Coursier/v1
           key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
 
+      - name: Verify Code Formatting
+        id: verify-formatting
+        run: sbt ++${{ matrix.scala }} scalafmtCheckAll
+
       - name: Check that workflows are up to date
         run: sbt ++${{ matrix.scala }} githubWorkflowCheck
 
-      - name: Test
-        run: sbt ++${{ matrix.scala }} clean coverage scalafmtCheckAll scalafmtSbtCheck test coverageReport
+      - name: Execute JVM Platform Unit Tests
+        id: execute-jvm-tests
+        if: matrix.platform == 'jvm'
+        run: sbt ++${{ matrix.scala }} circe-sconfig/test
 
-      - uses: codecov/codecov-action@v1
+      - name: Execute Javascript Platform Unit Tests
+        id: execute-js-tests
+        if: matrix.platform == 'js'
+        run: sbt ++${{ matrix.scala }} circe-sconfigJS/test
+
+  report-coverage:
+    name: Report Coverage
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        scala: [2.12.15]
+        java: [graal_21.3.0@11]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Instrument Coverage
+        run: sbt ++${{ matrix.scala }} coverage test coverageReport
+
+      - name: Publish Coverage Report
+        uses: codecov/codecov-action@v2

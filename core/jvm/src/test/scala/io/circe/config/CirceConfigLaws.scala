@@ -1,17 +1,17 @@
 package io.circe.config
 
-import cats.instances.either._
-import cats.laws._
-import cats.laws.discipline._
-import io.circe.{Decoder, Json, Parser, ParsingFailure}
+import cats.instances.either.*
+import cats.laws.*
+import cats.laws.discipline.*
 import io.circe.testing.ParserTests
+import io.circe.{Decoder, Json, Parser, ParsingFailure}
+import org.ekrich.config.{parser as _, *}
+import org.scalacheck.{Arbitrary, Prop}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.scalacheck.Checkers
-import org.scalacheck.{Arbitrary, Prop}
 import org.typelevel.discipline.Laws
-import org.ekrich.config.{parser => _, _}
 
-class CirceConfigLaws extends AnyFlatSpec {
+class CirceConfigLaws extends AnyFlatSpec { //FIXME Run on ScalaJS
 
   implicit val arbitraryConfigJson: Arbitrary[Json] = Arbitrary {
     def normalize(json: Json): Json =

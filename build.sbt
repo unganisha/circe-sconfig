@@ -15,6 +15,7 @@ val Versions = new {
   val scalaCheck = "1.15.4"
   val scalaTest = "3.2.10"
   val scalaTestPlus = "3.2.10.0"
+  val sjavatime = "1.1.8"
 }
 
 val commonSettings = Seq(
@@ -24,8 +25,6 @@ val commonSettings = Seq(
   homepage := (LocalRootProject / homepage).value,
   licenses := (LocalRootProject / licenses).value,
   scmInfo := (LocalRootProject / scmInfo).value,
-  Compile / console / scalacOptions --= Seq("-Ywarn-unused-import", "-Ywarn-unused:imports"),
-  Test / console / scalacOptions := (Compile / console / scalacOptions).value,
   scalacOptions ++= Seq(
     "-deprecation",
     "-encoding",
@@ -35,10 +34,13 @@ val commonSettings = Seq(
     "-language:higherKinds",
     "-unchecked",
     "-Xfatal-warnings",
+    "-Xsource:3",
     "-Ywarn-dead-code",
     "-Ywarn-numeric-widen",
     "-Ywarn-unused:imports"
-  )
+  ),
+  Compile / console / scalacOptions --= Seq("-Ywarn-unused-import", "-Ywarn-unused:imports"),
+  Test / console / scalacOptions := (Compile / console / scalacOptions).value,
 )
 
 val commonJvmSettings = Seq(
@@ -46,6 +48,10 @@ val commonJvmSettings = Seq(
   doctestMarkdownEnabled := true,
   Test / fork := true,
   Test / javaOptions := Seq("-Xmx3G"),
+)
+
+val commonJsSettings = Seq(
+  doctestGenTests := Nil,
 )
 
 val notPublished = Seq(
@@ -77,10 +83,16 @@ val docSettings = Seq(
 )
 
 val buildServerSettings = List(
-  githubWorkflowJavaVersions := Seq(JavaSpec.graalvm("21.3.0", "11"), JavaSpec.graalvm("21.3.0", "17")),
-  githubWorkflowBuildMatrixAdditions += "platform" -> List("jvm"),
+  githubWorkflowScalaVersions := (LocalRootProject / crossScalaVersions).value,
+  githubWorkflowJavaVersions := Seq(
+    JavaSpec.graalvm("21.3.0", "11"),
+    JavaSpec.graalvm("21.3.0", "17")
+  ),
+  githubWorkflowBuildMatrixAdditions += "platform" -> List("jvm", "js"),
   githubWorkflowPublishTargetBranches := Nil,
   githubWorkflowArtifactUpload := false,
+  githubWorkflowBuildMatrixFailFast := Some(false),
+  githubWorkflowUseSbtThinClient := false,
   githubWorkflowBuildPreamble := List(
     WorkflowStep.Sbt(
       List("scalafmtCheckAll"),
@@ -94,6 +106,12 @@ val buildServerSettings = List(
       id = Some("execute-jvm-tests"),
       name = Some("Execute JVM Platform Unit Tests"),
       cond = Some("matrix.platform == 'jvm'")
+    ),
+    WorkflowStep.Sbt(
+      List("circe-sconfigJS/test"),
+      id = Some("execute-js-tests"),
+      name = Some("Execute Javascript Platform Unit Tests"),
+      cond = Some("matrix.platform == 'js'")
     )
   ),
   githubWorkflowAddedJobs ++= List(
@@ -110,7 +128,7 @@ val buildServerSettings = List(
           name = Some("Publish Coverage Report")
         )
       ),
-      scalas = List(Versions.scala2),
+      scalas = List(scalaVersion.value),
       javas = List(githubWorkflowJavaVersions.value.head)
     )
   )
@@ -121,7 +139,7 @@ val versionSettings =
 
 lazy val localRoot =
   (project in file("."))
-    .aggregate(`circe-sconfig`)
+    .aggregate(`circe-sconfig`.jvm, `circe-sconfig`.js)
     .settings(notPublished)
     .settings(
       crossScalaVersions := List(Versions.scala2),
@@ -129,22 +147,40 @@ lazy val localRoot =
     )
 
 lazy val `circe-sconfig` =
-  (project in file("core"))
+  crossProject(JVMPlatform, JSPlatform)
+    .withoutSuffixFor(JVMPlatform)
+    .in(file("core"))
     .settings(commonSettings)
-    .settings(commonJvmSettings)
+    .jvmSettings(commonJvmSettings)
+    .jsSettings(commonJsSettings)
+    .jsConfigure(_.enablePlugins(ScalablyTypedConverterPlugin))
+    .jsSettings(
+      Test / npmDependencies ++= fromPackageJson(
+        "@types/node"
+      ).value,
+      libraryDependencies ++= Seq(
+        "org.ekrich" %%% "sjavatime" % Versions.sjavatime % Test,
+        ("org.scala-js" %%% "scalajs-weakreferences" % "1.0.0" % Test).cross(CrossVersion.for3Use2_13))
+    )
+    .enablePlugins(BuildInfoPlugin)
+    .settings(
+      buildInfoKeys ++= Seq(Test / classDirectory),
+      buildInfoPackage := "io.circe.config.build",
+      buildInfoObject := "Info"
+    )
     .settings(
       description := "Yet another Typesafe Config decoder",
       libraryDependencies ++= Seq(
-        "org.ekrich" %% "sconfig" % Versions.sconfig,
-        "io.circe" %% "circe-core" % Versions.circe,
-        "io.circe" %% "circe-parser" % Versions.circe,
-        "io.circe" %% "circe-generic" % Versions.circe % Test,
-        "io.circe" %% "circe-testing" % Versions.circe % Test,
-        "org.typelevel" %% "cats-effect" % Versions.catsEffect % Test,
-        "org.typelevel" %% "discipline-core" % Versions.discipline % Test,
-        "org.scalacheck" %% "scalacheck" % Versions.scalaCheck % Test,
-        "org.scalatest" %% "scalatest" % Versions.scalaTest % Test,
-        "org.scalatestplus" %% "scalacheck-1-15" % Versions.scalaTestPlus % Test),
+        "org.ekrich" %%% "sconfig" % Versions.sconfig,
+        "io.circe" %%% "circe-core" % Versions.circe,
+        "io.circe" %%% "circe-parser" % Versions.circe,
+        "io.circe" %%% "circe-generic" % Versions.circe % Test,
+        "io.circe" %%% "circe-testing" % Versions.circe % Test,
+        "org.typelevel" %%% "cats-effect" % Versions.catsEffect % Test,
+        "org.typelevel" %%% "discipline-core" % Versions.discipline % Test,
+        "org.scalacheck" %%% "scalacheck" % Versions.scalaCheck % Test,
+        "org.scalatest" %%% "scalatest" % Versions.scalaTest % Test,
+        "org.scalatestplus" %%% "scalacheck-1-15" % Versions.scalaTestPlus % Test),
     )
 
 enablePlugins(GitPlugin)
