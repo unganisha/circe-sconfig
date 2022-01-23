@@ -120,15 +120,15 @@ val buildServerSettings = List(
       "Report Coverage",
       steps = List(
         WorkflowStep.Sbt(
-          List("coverage", "test", "coverageReport"),
-          name = Some("Instrument Coverage"),
+          List("circe-sconfig/coverage", "circe-sconfig/test", "circe-sconfig/coverageReport"),
+          name = Some("Instrument Test Coverage"),
         ),
         WorkflowStep.Use(
           UseRef.Public("codecov", "codecov-action", "v2"),
           name = Some("Publish Coverage Report")
         )
       ),
-      scalas = List(scalaVersion.value),
+      scalas = List((LocalRootProject / scalaVersion).value),
       javas = List(githubWorkflowJavaVersions.value.head)
     )
   )
