@@ -11,7 +11,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.scalacheck.Checkers
 import org.typelevel.discipline.Laws
 
-class CirceConfigLaws extends AnyFlatSpec { //FIXME Run on ScalaJS
+class CirceConfigLaws extends AnyFlatSpec { // FIXME Run on ScalaJS
 
   implicit val arbitraryConfigJson: Arbitrary[Json] = Arbitrary {
     def normalize(json: Json): Json =

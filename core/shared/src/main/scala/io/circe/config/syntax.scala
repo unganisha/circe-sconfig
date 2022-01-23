@@ -22,8 +22,8 @@ import cats.instances.either._
 import cats.syntax.either._
 import cats.syntax.bifunctor._
 
-import scala.concurrent.duration._
 import java.time.Period
+import scala.concurrent.duration.*
 
 /**
  * Implicits for decoding Typesafe Config values and instances using [[io.circe.Decoder circe decoders]].

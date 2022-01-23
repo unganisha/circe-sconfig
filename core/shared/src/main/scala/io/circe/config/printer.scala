@@ -16,7 +16,7 @@
 package io.circe
 package config
 
-import org.ekrich.config._
+import org.ekrich.config.*
 
 /**
  * Print [[io.circe.Json]] to a Typesafe Config string.

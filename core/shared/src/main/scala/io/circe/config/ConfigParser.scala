@@ -28,8 +28,8 @@ import scala.jdk.CollectionConverters.*
 
 /**
  * Utilities for parsing
- * [[https://lightbend.github.io/config/latest/api/com/typesafe/config/Config.html org.ekrich.config.Config]] sources
- * to [[io.circe.Json]] as well as decoding to a specific type.
+ * [[https://lightbend.github.io/config/latest/api/com/typesafe/config/Config.html org.ekrich.config.Config]] sources to
+ * [[io.circe.Json]] as well as decoding to a specific type.
  *
  * If you are working in something like [[https://typelevel.org/cats-effect/api/cats/effect/IO cats.effect.IO]], or some
  * other type `F[_]` that provides a [[cats.ApplicativeError]], there are also decoders for loading such types.
