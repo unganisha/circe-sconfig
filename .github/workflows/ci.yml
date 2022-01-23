@@ -81,12 +81,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [2.12.15]
+        scala: [2.13.8]
         java: [graal_21.3.0@11]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Instrument Coverage
-        run: sbt ++${{ matrix.scala }} coverage test coverageReport
+      - name: Instrument Test Coverage
+        run: sbt ++${{ matrix.scala }} circe-sconfig/coverage circe-sconfig/test circe-sconfig/coverageReport
 
       - name: Publish Coverage Report
         uses: codecov/codecov-action@v2
