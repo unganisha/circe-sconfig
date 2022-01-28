@@ -1,10 +1,12 @@
 organization := "io.github.unganisha"
 homepage := Some(url("https://github.com/unganisha/circe-sconfig"))
 licenses += "Apache-2.0" -> url("https://www.apache.org/licenses/LICENSE-2.0.html")
-scmInfo := Some(ScmInfo(
-  url("https://github.com/unganisha/circe-sconfig"),
-  "scm:git:git@github.com:unganisha/circe-sconfig.git"
-))
+scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/unganisha/circe-sconfig"),
+    "scm:git:git@github.com:unganisha/circe-sconfig.git"
+  )
+)
 
 val Versions = new {
   val scala2 = "2.13.8"
@@ -40,18 +42,18 @@ val commonSettings = Seq(
     "-Ywarn-unused:imports"
   ),
   Compile / console / scalacOptions --= Seq("-Ywarn-unused-import", "-Ywarn-unused:imports"),
-  Test / console / scalacOptions := (Compile / console / scalacOptions).value,
+  Test / console / scalacOptions := (Compile / console / scalacOptions).value
 )
 
 val commonJvmSettings = Seq(
   doctestTestFramework := DoctestTestFramework.ScalaTest,
   doctestMarkdownEnabled := true,
   Test / fork := true,
-  Test / javaOptions := Seq("-Xmx3G"),
+  Test / javaOptions := Seq("-Xmx3G")
 )
 
 val commonJsSettings = Seq(
-  doctestGenTests := Nil,
+  doctestGenTests := Nil
 )
 
 val notPublished = Seq(
@@ -121,7 +123,7 @@ val buildServerSettings = List(
       steps = List(
         WorkflowStep.Sbt(
           List("circe-sconfig/coverage", "circe-sconfig/test", "circe-sconfig/coverageReport"),
-          name = Some("Instrument Test Coverage"),
+          name = Some("Instrument Test Coverage")
         ),
         WorkflowStep.Use(
           UseRef.Public("codecov", "codecov-action", "v2"),
@@ -143,7 +145,7 @@ lazy val localRoot =
     .settings(notPublished)
     .settings(
       crossScalaVersions := List(Versions.scala2),
-      scalaVersion := crossScalaVersions.value.last,
+      scalaVersion := crossScalaVersions.value.last
     )
 
 lazy val `circe-sconfig` =
@@ -160,7 +162,8 @@ lazy val `circe-sconfig` =
       ).value,
       libraryDependencies ++= Seq(
         "org.ekrich" %%% "sjavatime" % Versions.sjavatime % Test,
-        ("org.scala-js" %%% "scalajs-weakreferences" % "1.0.0" % Test).cross(CrossVersion.for3Use2_13))
+        ("org.scala-js" %%% "scalajs-weakreferences" % "1.0.0" % Test).cross(CrossVersion.for3Use2_13)
+      )
     )
     .enablePlugins(BuildInfoPlugin)
     .settings(
@@ -180,7 +183,8 @@ lazy val `circe-sconfig` =
         "org.typelevel" %%% "discipline-core" % Versions.discipline % Test,
         "org.scalacheck" %%% "scalacheck" % Versions.scalaCheck % Test,
         "org.scalatest" %%% "scalatest" % Versions.scalaTest % Test,
-        "org.scalatestplus" %%% "scalacheck-1-15" % Versions.scalaTestPlus % Test),
+        "org.scalatestplus" %%% "scalacheck-1-15" % Versions.scalaTestPlus % Test
+      )
     )
 
 enablePlugins(GitPlugin)

@@ -35,7 +35,7 @@ import scala.jdk.CollectionConverters.*
  * other type `F[_]` that provides a [[cats.ApplicativeError]], there are also decoders for loading such types.
  *
  * @example
- * {{{
+ *   {{{
  * scala> import org.ekrich.config.ConfigFactory
  * scala> import io.circe.config.parser
  * scala> val config = ConfigFactory.parseString("server { host = localhost, port = 8080 }")
@@ -56,7 +56,7 @@ import scala.jdk.CollectionConverters.*
  * scala> import cats.effect.IO
  * scala> parser.decodePathF[IO, ServerSettings](config, "server")
  * res3: cats.effect.IO[ServerSettings] = IO(ServerSettings(localhost,8080))
- * }}}
+ *   }}}
  *
  * @see
  *   [[syntax.configDecoder]] for how to map [[io.circe.Json]] to
@@ -120,7 +120,7 @@ trait ConfigParser extends Parser {
    * Load the default configuration and decode an instance at a specific path.
    *
    * @example
-   * {{{
+   *   {{{
    * scala> import io.circe.generic.auto._
    * scala> case class ServerSettings(host: String, port: Int)
    * scala> case class HttpSettings(server: ServerSettings)
@@ -131,7 +131,7 @@ trait ConfigParser extends Parser {
    *
    * scala> parser.decode[AppSettings](config)
    * res0: Either[io.circe.Error, AppSettings] = Right(AppSettings(HttpSettings(ServerSettings(localhost,8080))))
-   * }}}
+   *   }}}
    */
   final def decode[A: Decoder](config: Config): Either[Error, A] =
     finishDecode(parse(config))
@@ -140,7 +140,7 @@ trait ConfigParser extends Parser {
    * Decode of an instance at a specific path.
    *
    * @example
-   * {{{
+   *   {{{
    * scala> import io.circe.generic.auto._
    * scala> case class ServerSettings(host: String, port: Int)
    *
@@ -149,7 +149,7 @@ trait ConfigParser extends Parser {
    *
    * scala> parser.decodePath[ServerSettings](config, "http.server")
    * res0: Either[io.circe.Error, ServerSettings] = Right(ServerSettings(localhost,8080))
-   * }}}
+   *   }}}
    */
   final def decodePath[A: Decoder](config: Config, path: String): Either[Error, A] =
     finishDecode(parsePath(config, path))
@@ -161,7 +161,7 @@ trait ConfigParser extends Parser {
    * Decode an instance supporting [[cats.ApplicativeError]].
    *
    * @example
-   * {{{
+   *   {{{
    * scala> import io.circe.generic.auto._
    * scala> case class ServerSettings(host: String, port: Int)
    * scala> case class HttpSettings(server: ServerSettings)
@@ -173,7 +173,7 @@ trait ConfigParser extends Parser {
    * scala> import cats.effect.IO
    * scala> parser.decodeF[IO, AppSettings](config)
    * res0: cats.effect.IO[AppSettings] = IO(AppSettings(HttpSettings(ServerSettings(localhost,8080))))
-   * }}}
+   *   }}}
    */
   final def decodeF[F[_], A: Decoder](config: Config)(implicit ev: ApplicativeError[F, Throwable]): F[A] =
     decode[A](config).leftWiden[Throwable].liftTo[F]
@@ -182,7 +182,7 @@ trait ConfigParser extends Parser {
    * Decode an instance supporting [[cats.ApplicativeError]] at a specific path.
    *
    * @example
-   * {{{
+   *   {{{
    * scala> import io.circe.generic.auto._
    * scala> case class ServerSettings(host: String, port: Int)
    *
@@ -193,7 +193,7 @@ trait ConfigParser extends Parser {
    * scala> import io.circe.config.parser
    * scala> parser.decodePathF[IO, ServerSettings](config, "http.server")
    * res0: cats.effect.IO[ServerSettings] = IO(ServerSettings(localhost,8080))
-   * }}}
+   *   }}}
    */
   final def decodePathF[F[_], A: Decoder](config: Config, path: String)(implicit
     ev: ApplicativeError[F, Throwable]

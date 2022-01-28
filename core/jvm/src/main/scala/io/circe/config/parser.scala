@@ -25,7 +25,7 @@ object parser extends ConfigParser {
    * Load the default configuration and decode an instance at a specific path.
    *
    * @example
-   * {{{
+   *   {{{
    * scala> import io.circe.generic.auto._
    * scala> case class ServerSettings(host: String, port: Int)
    * scala> case class HttpSettings(server: ServerSettings)
@@ -33,7 +33,7 @@ object parser extends ConfigParser {
    *
    * scala> parser.decode[AppSettings]()
    * res0: Either[io.circe.Error, AppSettings] = Right(AppSettings(HttpSettings(ServerSettings(localhost,8080))))
-   * }}}
+   *   }}}
    */
   final def decode[A: Decoder](): Either[Error, A] =
     finishDecode(parse())
@@ -42,7 +42,7 @@ object parser extends ConfigParser {
    * Load configuration from file and decode an instance.
    *
    * @example
-   * {{{
+   *   {{{
    * scala> import io.circe.generic.auto._
    * scala> case class ServerSettings(host: String, port: Int)
    * scala> case class HttpSettings(server: ServerSettings)
@@ -50,7 +50,7 @@ object parser extends ConfigParser {
    *
    * scala> parser.decodeFile[AppSettings](new java.io.File(io.circe.config.build.Info.test_classDirectory.getPath + "/application.conf"))
    * res0: Either[io.circe.Error, AppSettings] = Right(AppSettings(HttpSettings(ServerSettings(localhost,8080))))
-   * }}}
+   *   }}}
    */
   final def decodeFile[A: Decoder](file: File): Either[Error, A] =
     finishDecode(parseFile(file))
@@ -59,13 +59,13 @@ object parser extends ConfigParser {
    * Load the default configuration and decode an instance.
    *
    * @example
-   * {{{
+   *   {{{
    * scala> import io.circe.generic.auto._
    * scala> case class ServerSettings(host: String, port: Int)
    *
    * scala> parser.decodePath[ServerSettings]("http.server")
    * res0: Either[io.circe.Error, ServerSettings] = Right(ServerSettings(localhost,8080))
-   * }}}
+   *   }}}
    */
   final def decodePath[A: Decoder](path: String): Either[Error, A] =
     finishDecode(parsePath(path))
@@ -77,7 +77,7 @@ object parser extends ConfigParser {
    * Load default configuration and decode an instance supporting [[cats.ApplicativeError]].
    *
    * @example
-   * {{{
+   *   {{{
    * scala> import io.circe.generic.auto._
    * scala> case class ServerSettings(host: String, port: Int)
    * scala> case class HttpSettings(server: ServerSettings)
@@ -86,7 +86,7 @@ object parser extends ConfigParser {
    * scala> import cats.effect.IO
    * scala> parser.decodeF[IO, AppSettings]()
    * res0: cats.effect.IO[AppSettings] = IO(AppSettings(HttpSettings(ServerSettings(localhost,8080))))
-   * }}}
+   *   }}}
    */
   final def decodeF[F[_], A: Decoder]()(implicit ev: ApplicativeError[F, Throwable]): F[A] =
     decode[A]().leftWiden[Throwable].liftTo[F]
@@ -95,14 +95,14 @@ object parser extends ConfigParser {
    * Load default configuration and decode an instance supporting [[cats.ApplicativeError]] at a specific path.
    *
    * @example
-   * {{{
+   *   {{{
    * scala> import io.circe.generic.auto._
    * scala> case class ServerSettings(host: String, port: Int)
    *
    * scala> import cats.effect.IO
    * scala> parser.decodePathF[IO, ServerSettings]("http.server")
    * res0: cats.effect.IO[ServerSettings] = IO(ServerSettings(localhost,8080))
-   * }}}
+   *   }}}
    */
   final def decodePathF[F[_], A: Decoder](path: String)(implicit ev: ApplicativeError[F, Throwable]): F[A] =
     decodePath[A](path).leftWiden[Throwable].liftTo[F]
