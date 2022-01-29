@@ -122,12 +122,16 @@ val buildServerSettings = List(
       "Report Coverage",
       steps = List(
         WorkflowStep.Sbt(
-          List("circe-sconfig/coverage", "circe-sconfig/test", "circe-sconfig/coverageReport"),
-          name = Some("Instrument Test Coverage")
+          List("coverage", "test"),
+          name = Some("Instrument Test Coverage"),
+        ),
+        WorkflowStep.Sbt(
+          List("coverageReport"),
+          name = Some("Generate Coverage Reports"),
         ),
         WorkflowStep.Use(
           UseRef.Public("codecov", "codecov-action", "v2"),
-          name = Some("Publish Coverage Report")
+          name = Some("Publish Coverage Reports")
         )
       ),
       scalas = List((LocalRootProject / scalaVersion).value),
@@ -138,6 +142,11 @@ val buildServerSettings = List(
 
 val versionSettings =
   versionWithGit :+ (git.useGitDescribe := true)
+
+val scalaVersionSettings = Seq(
+  scalaVersion := (LocalRootProject / scalaVersion).value,
+  crossScalaVersions := (LocalRootProject / crossScalaVersions).value
+)
 
 lazy val localRoot =
   (project in file("."))
@@ -189,5 +198,5 @@ lazy val `circe-sconfig` =
 
 enablePlugins(GitPlugin)
 inThisBuild(versionSettings)
-
+inThisBuild(scalaVersionSettings)
 inThisBuild(buildServerSettings)
