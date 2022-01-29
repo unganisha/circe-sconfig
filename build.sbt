@@ -114,28 +114,6 @@ val buildServerSettings = List(
       cond = Some("matrix.platform == 'js'")
     )
   ),
-  githubWorkflowAddedJobs ++= List(
-    WorkflowJob(
-      "report-coverage",
-      "Report Coverage",
-      steps = List(
-        WorkflowStep.Sbt(
-          List("coverage", "test"),
-          name = Some("Instrument Test Coverage"),
-        ),
-        WorkflowStep.Sbt(
-          List("coverageReport"),
-          name = Some("Generate Coverage Reports"),
-        ),
-        WorkflowStep.Use(
-          UseRef.Public("codecov", "codecov-action", "v2"),
-          name = Some("Publish Coverage Reports")
-        )
-      ),
-      scalas = List((LocalRootProject / scalaVersion).value),
-      javas = List(githubWorkflowJavaVersions.value.head)
-    )
-  )
 )
 
 val versionSettings =
