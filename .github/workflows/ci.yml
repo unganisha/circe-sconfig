@@ -86,7 +86,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Instrument Test Coverage
-        run: sbt ++${{ matrix.scala }} circe-sconfig/coverage circe-sconfig/test circe-sconfig/coverageReport
+        run: sbt ++${{ matrix.scala }} coverage test
 
-      - name: Publish Coverage Report
+      - name: Generate Coverage Reports
+        run: sbt ++${{ matrix.scala }} coverageReport
+
+      - name: Publish Coverage Reports
         uses: codecov/codecov-action@v2
