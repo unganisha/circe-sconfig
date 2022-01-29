@@ -141,6 +141,11 @@ val buildServerSettings = List(
 val versionSettings =
   versionWithGit :+ (git.useGitDescribe := true)
 
+val scalaVersionSettings = Seq(
+  scalaVersion := (LocalRootProject / scalaVersion).value,
+  crossScalaVersions := (LocalRootProject / crossScalaVersions).value
+)
+
 lazy val localRoot =
   (project in file("."))
     .aggregate(`circe-sconfig`.jvm, `circe-sconfig`.js)
@@ -189,5 +194,5 @@ lazy val `circe-sconfig` =
 
 enablePlugins(GitPlugin)
 inThisBuild(versionSettings)
-
+inThisBuild(scalaVersionSettings)
 inThisBuild(buildServerSettings)
