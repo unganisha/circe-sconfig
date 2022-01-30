@@ -16,7 +16,7 @@ val Versions = new {
   val discipline = "1.4.0"
   val scalaCheck = "1.15.4"
   val scalaTest = "3.2.11"
-  val scalaTestPlus = "3.2.10.0"
+  val scalaTestPlus = "3.2.11.0"
   val sjavatime = "1.1.9"
 }
 
@@ -115,7 +115,7 @@ val buildServerSettings = List(
       name = Some("Execute Javascript Platform Unit Tests"),
       cond = Some("matrix.platform == 'js'")
     )
-  ),
+  )
 )
 
 val versionSettings =
