@@ -1,14 +1,13 @@
 # circe-config
 
 [![CI Status]][CI]
-[![Latest Version Badge]][Latest Version]
 
-Small library for translating between [HOCON], [Java properties], and JSON
-documents and circe's JSON AST.
+Small library for translating between [HOCON], [Java properties], and JSON documents and circe's JSON AST. Forked
+from [circe-config] to allow for Scala JS and Scala Native support via [sconfig]. All credit goes towards the original
+developers.
 
-At a high-level it can be used as a [circe] powered front-end for the [Typesafe
-config] library to enable boilerplate free loading of settings into Scala types.
-More generally it provides parsers and printers for interoperating with
+At a high-level it can be used as a [circe] powered front-end for the [sconfig] library to enable boilerplate free
+loading of settings into Scala types. More generally it provides parsers and printers for interoperating with
 [Typesafe config]'s JSON AST.
 
  [HOCON]: https://github.com/lightbend/config/blob/master/HOCON.md
@@ -19,97 +18,30 @@ More generally it provides parsers and printers for interoperating with
 To use this library configure your sbt project with the following line:
 
 ```sbt
-libraryDependencies += "io.circe" %% "circe-config" % "0.8.0"
+libraryDependencies += "io.github.unganisha" %% "circe-sconfig" % "0.8.0"
 ```
 
 ## Documentation
+Please refer to the original library documentation [here](https://circe.github.io/circe-config/io/circe/config/index.html).
+This is to reduce the maintenance burden of this library.
 
- - [API docs](https://circe.github.io/circe-config/io/circe/config/index.html)
+### Non JVM Usage
+Currently, the supported platforms include the  JVM and [Scala.js](https://www.scala-js.org/).
 
-## Example
+In the case of platforms other than a Java Virtual Machine, only a subset of the API is available. Specifically any
+methods that make use of `java.io.File` and/or `java.net.URL` are not currently supported. Additionally, an
+implementation of the `java.time` API must also be included, such as [sjavatime](https://github.com/ekrich/sjavatime)
+for example.
 
-The following examples use `io.circe:circe-generic` as a dependency to
-automatically derive decoders. They load the configuration found in
-[application.conf].
-
-```scala
-scala> import org.ekrich.config.{ ConfigFactory, ConfigMemorySize }
-scala> import io.circe.generic.auto._
-scala> import io.circe.config.syntax._
-scala> import scala.concurrent.duration.FiniteDuration
-
-scala> case class ServerSettings(host: String, port: Int, timeout: FiniteDuration, maxUpload: ConfigMemorySize)
-scala> case class HttpSettings(server: ServerSettings, version: Option[Double])
-scala> case class AppSettings(http: HttpSettings)
-
-// Load default configuration and decode instances
-scala> import io.circe.config.parser
-
-scala> parser.decode[AppSettings]()
-res0: Either[io.circe.Error,AppSettings] = Right(AppSettings(HttpSettings(ServerSettings(localhost,8080,5 seconds,ConfigMemorySize(5242880)),Some(1.1))))
-
-scala> parser.decodePath[ServerSettings]("http.server")
-res1: Either[io.circe.Error,ServerSettings] = Right(ServerSettings(localhost,8080,5 seconds,ConfigMemorySize(5242880)))
-
-scala> val config = ConfigFactory.load()
-
-// Decode instances from an already loaded configuration
-
-scala> config.as[ServerSettings]("http.server")
-res2: Either[io.circe.Error,ServerSettings] = Right(ServerSettings(localhost,8080,5 seconds,ConfigMemorySize(5242880)))
-
-scala> config.as[HttpSettings]("http")
-res3: Either[io.circe.Error,HttpSettings] = Right(HttpSettings(ServerSettings(localhost,8080,5 seconds,ConfigMemorySize(5242880)),Some(1.1)))
-
-scala> config.as[AppSettings]
-res4: Either[io.circe.Error,AppSettings] = Right(AppSettings(HttpSettings(ServerSettings(localhost,8080,5 seconds,ConfigMemorySize(5242880)),Some(1.1))))
-```
-
-If you are using [`cats.effect.IO`], or some other type `F[_]` that provides a
-[`cats.ApplicativeError`], you can use the following:
-
-```scala
-scala> import cats.effect.IO
-scala> import io.circe.generic.auto._
-scala> import io.circe.config.parser
-
-scala> case class ServerSettings(host: String, port: Int)
-scala> case class HttpSettings(server: ServerSettings, version: Option[Double])
-scala> case class AppSettings(http: HttpSettings)
-
-scala> parser.decodeF[IO, AppSettings]()
-res0: cats.effect.IO[AppSettings] = IO(AppSettings(HttpSettings(ServerSettings(localhost,8080),Some(1.1))))
-
-scala> val settings: IO[AppSettings] = parser.decodeF[IO, AppSettings]()
-scala> settings.unsafeRunSync()
-res1: AppSettings = AppSettings(HttpSettings(ServerSettings(localhost,8080),Some(1.1)))
-
-scala> parser.decodePathF[IO, ServerSettings]("http.server")
-res2: cats.effect.IO[ServerSettings] = IO(ServerSettings(localhost,8080))
-
-scala> parser.decodePathF[IO, ServerSettings]("path.not.found")
-res3: cats.effect.IO[ServerSettings] = IO(throw io.circe.ParsingFailure: Path not found in config)
-```
-
-This makes the configuration directly available in your `F[_]`, such as `cats.effect.IO`, which handles any errors.
-
-[application.conf]: https://github.com/circe/circe-config/tree/master/src/test/resources/application.conf
-[`cats.effect.IO`]: https://typelevel.org/cats-effect/datatypes/io.html
-[`cats.ApplicativeError`]: https://typelevel.org/cats/api/cats/ApplicativeError.html
+## Examples
+Please refer to the original library examples [here](https://github.com/circe/circe-config#example).
 
 ## Contributing
 
 Contributions are very welcome. Please see [instructions](CONTRIBUTING.md) on
 how to create issues and submit patches.
 
-## Releasing
-
-To release version `x.y.z` run:
-
-    > sbt -Dproject.version=x.y.z release
-
 ## License
-
 circe-config is licensed under the **[Apache License, Version 2.0][apache]** (the
 "License"); you may not use this software except in compliance with the License.
 
@@ -121,6 +53,8 @@ limitations under the License.
 
  [apache]: http://www.apache.org/licenses/LICENSE-2.0
  [circe]: https://github.com/circe/circe
+ [circe-config]: https://github.com/circe/circe-config
+ [sconfig]: https://github.com/ekrich/sconfig
  [Typesafe config]: https://github.com/lightbend/config
  [CI]: https://github.com/unganisha/circe-sconfig/actions
  [CI Status]: https://img.shields.io/github/workflow/status/unganisha/circe-sconfig/Continuous%20Integration.svg
