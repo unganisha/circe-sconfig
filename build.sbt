@@ -10,7 +10,7 @@ scmInfo := Some(
 
 val Versions = new {
   val scala2 = "2.13.8"
-  val catsEffect = "2.5.4"
+  val catsEffect = "3.3.6"
   val circe = "0.14.1"
   val sconfig = "1.4.9"
   val discipline = "1.4.0"
@@ -115,7 +115,7 @@ val buildServerSettings = List(
       name = Some("Execute Javascript Platform Unit Tests"),
       cond = Some("matrix.platform == 'js'")
     )
-  ),
+  )
 )
 
 val versionSettings =
