@@ -12,12 +12,12 @@ val Versions = new {
   val scala2 = "2.13.8"
   val catsEffect = "2.5.4"
   val circe = "0.14.1"
-  val sconfig = "1.4.7"
+  val sconfig = "1.4.9"
   val discipline = "1.4.0"
   val scalaCheck = "1.15.4"
-  val scalaTest = "3.2.10"
-  val scalaTestPlus = "3.2.10.0"
-  val sjavatime = "1.1.8"
+  val scalaTest = "3.2.11"
+  val scalaTestPlus = "3.2.11.0"
+  val sjavatime = "1.1.9"
 }
 
 val commonSettings = Seq(
@@ -114,28 +114,6 @@ val buildServerSettings = List(
       id = Some("execute-js-tests"),
       name = Some("Execute Javascript Platform Unit Tests"),
       cond = Some("matrix.platform == 'js'")
-    )
-  ),
-  githubWorkflowAddedJobs ++= List(
-    WorkflowJob(
-      "report-coverage",
-      "Report Coverage",
-      steps = List(
-        WorkflowStep.Sbt(
-          List("coverage", "test"),
-          name = Some("Instrument Test Coverage"),
-        ),
-        WorkflowStep.Sbt(
-          List("coverageReport"),
-          name = Some("Generate Coverage Reports"),
-        ),
-        WorkflowStep.Use(
-          UseRef.Public("codecov", "codecov-action", "v2"),
-          name = Some("Publish Coverage Reports")
-        )
-      ),
-      scalas = List((LocalRootProject / scalaVersion).value),
-      javas = List(githubWorkflowJavaVersions.value.head)
     )
   )
 )

@@ -75,21 +75,3 @@ jobs:
         id: execute-js-tests
         if: matrix.platform == 'js'
         run: sbt ++${{ matrix.scala }} circe-sconfigJS/test
-
-  report-coverage:
-    name: Report Coverage
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        scala: [2.13.8]
-        java: [graal_21.3.0@11]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Instrument Test Coverage
-        run: sbt ++${{ matrix.scala }} coverage test
-
-      - name: Generate Coverage Reports
-        run: sbt ++${{ matrix.scala }} coverageReport
-
-      - name: Publish Coverage Reports
-        uses: codecov/codecov-action@v2
