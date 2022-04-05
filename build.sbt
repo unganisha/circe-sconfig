@@ -154,7 +154,7 @@ lazy val `circe-sconfig` =
     )
     .enablePlugins(BuildInfoPlugin)
     .settings(
-      buildInfoKeys ++= Seq(Test / classDirectory),
+      buildInfoKeys ++= Seq(Test / classDirectory, Test / resourceDirectory),
       buildInfoPackage := "io.circe.config.build",
       buildInfoObject := "Info"
     )
@@ -173,6 +173,7 @@ lazy val `circe-sconfig` =
         "org.scalatestplus" %%% "scalacheck-1-15" % Versions.scalaTestPlus % Test
       )
     )
+
 
 enablePlugins(GitPlugin)
 inThisBuild(versionSettings)

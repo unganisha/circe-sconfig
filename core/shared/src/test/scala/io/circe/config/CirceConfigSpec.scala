@@ -30,20 +30,6 @@ import io.circe.config.Resources
 class CirceConfigSpec extends AnyFlatSpec with Matchers {
   import CirceConfigSpec._
 
-  trait ParserTests {
-    def parse: Either[ParsingFailure, Json]
-    def decode: Either[Error, TestConfig]
-
-    assert(parse.isRight)
-
-    val Right(config) = decode
-
-    assert(config == DecodedTestConfig)
-    assert(config.k.getDouble("ka") == 1.1)
-    assert(config.k.getString("kb") == "abc")
-    assert(config.l.unwrapped == "localhost")
-  }
-
   "parser" should "parse and decode config from string" in new ParserTests {
     def parse = parser.parse(AppConfigString)
     def decode = parser.decode[TestConfig](AppConfigString)
@@ -53,24 +39,6 @@ class CirceConfigSpec extends AnyFlatSpec with Matchers {
     def parse = parser.parse(AppConfig)
     def decode = parser.decode[TestConfig](AppConfig)
   }
-
-//  it should "parse and decode config from file" in new ParserTests {
-//    def file = resolveFile("CirceConfigSpec.conf")
-//    def parse = parser.parseFile(file)
-//    def decode = parser.decodeFile[TestConfig](file)
-//  }
-
-//  it should "parse and decode config from default typesafe config resolution" in {
-//    parser.decode[AppSettings]().fold(fail(_), _ should equal(DecodedAppSettings))
-//  }
-
-//  it should "parse and decode config from default typesafe config resolution via ApplicativeError" in {
-//    parser.decodeF[IO, AppSettings]().unsafeRunSync() should equal(DecodedAppSettings)
-//  }
-
-//  it should "parse and decode config from default typesafe config resolution with path via ApplicativeError" in {
-//    parser.decodePathF[IO, HttpSettings]("http").unsafeRunSync() should equal(DecodedAppSettings.http)
-//  }
 
   "printer" should "print it into a config string" in {
     val Right(json) = parser.parse(AppConfig)
@@ -86,21 +54,36 @@ class CirceConfigSpec extends AnyFlatSpec with Matchers {
     assert(AppConfig.as[Nested]("e") == Right(Nested(true)))
   }
 
-//  "round-trip" should "parse and print" in {
-//    for (file <- testResourcesDir.listFiles) {
-//      val Right(json) = parser.parseFile(file)
-//      assert(parser.parse(printer.print(json)) == Right(json), s"round-trip failed for ${file.getName}")
-//    }
-//  }
+  "round-trip" should "parse and print" in {
+    for (file <- Resources.listFiles(resourcesDir)) {
+      val Right(json) = parser.parse(Resources.readFile(file))
+      assert(parser.parse(printer.print(json)) == Right(json), s"round-trip failed for $file")
+    }
+  }
+
 }
 
 object CirceConfigSpec {
-  val testResourcesDir: String = Resources.testClassesDirectory
-//  def resolveFile(name: String) = new java.io.File(testResourcesDir, name)
+  val classesDir: String = Resources.testClassesDirectory
+  val resourcesDir: String = Resources.sharedTestResourcesDirectory
   def readFile(path: String): String = Resources.readResourceFile(path)
 
   val AppConfig: Config = ConfigFactory.parseString(readFile("CirceConfigSpec.conf"))
   val AppConfigString: String = readFile("CirceConfigSpec.conf")
+
+  trait ParserTests {
+    def parse: Either[ParsingFailure, Json]
+    def decode: Either[Error, TestConfig]
+
+    assert(parse.isRight)
+
+    val Right(config) = decode
+
+    assert(config == DecodedTestConfig)
+    assert(config.k.getDouble("ka") == 1.1)
+    assert(config.k.getString("kb") == "abc")
+    assert(config.l.unwrapped == "localhost")
+  }
 
   sealed abstract class Adder[T] {
     def add(a: T, b: T): T
