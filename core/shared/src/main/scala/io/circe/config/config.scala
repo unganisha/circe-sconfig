@@ -34,6 +34,7 @@ import scala.jdk.CollectionConverters.*
  * scala> import org.ekrich.config.ConfigFactory
  * scala> import io.circe.generic.auto._
  * scala> import io.circe.config.syntax._
+ * scala> import cats.effect.unsafe.implicits.global
  *
  * scala> case class ServerSettings(host: String, port: Int, ssl: Option[String])
  * scala> case class HttpSettings(server: ServerSettings, version: Double)

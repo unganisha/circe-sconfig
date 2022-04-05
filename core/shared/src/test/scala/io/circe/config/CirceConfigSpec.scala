@@ -15,7 +15,6 @@
  */
 package io.circe.config
 
-import cats.effect.IO
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.flatspec.AnyFlatSpec
 import org.ekrich.config.{parser => _, _}
@@ -85,14 +84,6 @@ class CirceConfigSpec extends AnyFlatSpec with Matchers {
 
   it should "provide syntax to decode at a given path" in {
     assert(AppConfig.as[Nested]("e") == Right(Nested(true)))
-  }
-
-  it should "provide Config decoder via ApplicativeError" in {
-    assert(AppConfig.asF[IO, TestConfig].unsafeRunSync() == DecodedTestConfig)
-  }
-
-  it should "provide syntax to decode at a given path via ApplicativeError" in {
-    assert(AppConfig.asF[IO, Nested]("e").unsafeRunSync() == Nested(true))
   }
 
 //  "round-trip" should "parse and print" in {
