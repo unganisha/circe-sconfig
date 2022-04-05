@@ -10,7 +10,6 @@ import org.scalatest.matchers.should.Matchers
 
 class CirceJvmConfigSpec extends AnyFlatSpec with Matchers {
 
-
   it should "provide Config decoder via ApplicativeError" in {
     assert(AppConfig.asF[IO, TestConfig].unsafeRunSync() == DecodedTestConfig)
   }
