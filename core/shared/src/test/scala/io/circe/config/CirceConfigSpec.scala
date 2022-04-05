@@ -71,7 +71,6 @@ object CirceConfigSpec {
   val AppConfig: Config = ConfigFactory.parseString(readFile("CirceConfigSpec.conf"))
   val AppConfigString: String = readFile("CirceConfigSpec.conf")
 
-
   trait ParserTests {
     def parse: Either[ParsingFailure, Json]
     def decode: Either[Error, TestConfig]

@@ -4,9 +4,8 @@ import typings.node.{fsMod, pathMod}
 
 object Resources extends ResourceBase {
 
-  def listFiles(directory: String): List[String] = {
+  def listFiles(directory: String): List[String] =
     fsMod.readdirSync(directory).map(pathMod.join(directory, _)).toList
-  }
 
   def readResourceFile(fileName: String): String = {
     val file = pathMod.join(testClassesDirectory, fileName)
@@ -18,6 +17,5 @@ object Resources extends ResourceBase {
       throw new RuntimeException(s"Unable to find existing resource file at $file")
     fsMod.readFileSync(file).toString
   }
-
 
 }
