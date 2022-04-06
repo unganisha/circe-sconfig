@@ -10,7 +10,7 @@ scmInfo := Some(
 
 val Versions = new {
   val scala2 = "2.13.8"
-  val catsEffect = "3.3.10"
+  val catsEffect = "3.3.11"
   val circe = "0.14.1"
   val sconfig = "1.4.9"
   val discipline = "1.4.0"
@@ -173,7 +173,6 @@ lazy val `circe-sconfig` =
         "org.scalatestplus" %%% "scalacheck-1-15" % Versions.scalaTestPlus % Test
       )
     )
-
 
 enablePlugins(GitPlugin)
 inThisBuild(versionSettings)
