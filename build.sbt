@@ -10,10 +10,11 @@ scmInfo := Some(
 
 val Versions = new {
   val scala2 = "2.13.8"
+  val scala3 = "3.1.2"
   val catsEffect = "3.3.11"
   val circe = "0.14.1"
   val sconfig = "1.4.9"
-  val discipline = "1.4.0"
+  val discipline = "1.5.0"
   val scalaCheck = "1.16.0"
   val scalaTest = "3.2.11"
   val scalaTestPlus = "3.2.11.0"
@@ -27,20 +28,25 @@ val commonSettings = Seq(
   homepage := (LocalRootProject / homepage).value,
   licenses := (LocalRootProject / licenses).value,
   scmInfo := (LocalRootProject / scmInfo).value,
-  scalacOptions ++= Seq(
-    "-deprecation",
-    "-encoding",
-    "UTF-8",
-    "-feature",
-    "-language:postfixOps",
-    "-language:higherKinds",
-    "-unchecked",
-    "-Xfatal-warnings",
-    "-Xsource:3",
-    "-Ywarn-dead-code",
-    "-Ywarn-numeric-widen",
-    "-Ywarn-unused:imports"
-  ),
+  scalacOptions ++= {
+    val commonOptions = List(
+      "-encoding",
+      "UTF-8",
+      "-deprecation",
+      "-feature",
+      "-unchecked",
+      "-language:postfixOps",
+      "-Xfatal-warnings",
+    )
+    val scala2Options = List(
+      "-language:higherKinds",
+      "-Xsource:3",
+      "-Ywarn-dead-code",
+      "-Ywarn-numeric-widen",
+      "-Ywarn-unused:imports",
+    )
+    if (scalaVersion.value == Versions.scala3) commonOptions else commonOptions ++ scala2Options
+  },
   Compile / console / scalacOptions --= Seq("-Ywarn-unused-import", "-Ywarn-unused:imports"),
   Test / console / scalacOptions := (Compile / console / scalacOptions).value
 )
@@ -131,7 +137,7 @@ lazy val localRoot =
     .aggregate(`circe-sconfig`.jvm, `circe-sconfig`.js)
     .settings(notPublished)
     .settings(
-      crossScalaVersions := List(Versions.scala2),
+      crossScalaVersions := List(Versions.scala2, Versions.scala3),
       scalaVersion := crossScalaVersions.value.last
     )
 
