@@ -4,9 +4,10 @@ import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import io.circe.config.CirceConfigSpec.*
 import io.circe.config.syntax.*
-import io.circe.generic.auto.*
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+
+import io.circe.config.Fixtures._
 
 class CirceJvmConfigSpec extends AnyFlatSpec with Matchers {
 
