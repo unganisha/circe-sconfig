@@ -19,13 +19,12 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.flatspec.AnyFlatSpec
 import org.ekrich.config.{parser => _, _}
 import io.circe.{parser => _, _}
-import io.circe.generic.auto._
 
 import scala.concurrent.duration._
 import java.time.Period
-//import scala.io.Source
 import io.circe.config.syntax._
 import io.circe.config.Resources
+import io.circe.config.Fixtures._
 
 class CirceConfigSpec extends AnyFlatSpec with Matchers {
   import CirceConfigSpec._
@@ -84,46 +83,6 @@ object CirceConfigSpec {
     assert(config.k.getString("kb") == "abc")
     assert(config.l.unwrapped == "localhost")
   }
-
-  sealed abstract class Adder[T] {
-    def add(a: T, b: T): T
-  }
-  implicit def numericAdder[T: scala.math.Numeric]: Adder[T] = new Adder[T] {
-    override def add(a: T, b: T): T = implicitly[scala.math.Numeric[T]].plus(a, b)
-  }
-
-  case class TypeWithAdder[T: Adder](typeWithAdder: T)
-  case class Nested(obj: Boolean)
-  case class TestConfig(
-    a: Int,
-    b: Boolean,
-    c: String,
-    d: Option[String],
-    e: Nested,
-    f: List[Double],
-    g: List[List[String]],
-    h: List[Nested],
-    i: FiniteDuration,
-    j: ConfigMemorySize,
-    k: Config,
-    l: ConfigValue,
-    m: TypeWithAdder[Int],
-    n: Double,
-    o: Double,
-    p: Period
-  )
-
-  case class ServerSettings(
-    host: String,
-    port: Int,
-    timeout: FiniteDuration,
-    maxUpload: ConfigMemorySize
-  )
-  case class HttpSettings(
-    version: Double,
-    server: ServerSettings
-  )
-  case class AppSettings(http: HttpSettings)
 
   val DecodedAppSettings = AppSettings(
     HttpSettings(
