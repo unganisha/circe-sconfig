@@ -36,14 +36,14 @@ val commonSettings = Seq(
       "-feature",
       "-unchecked",
       "-language:postfixOps",
-      "-Xfatal-warnings",
+      "-Xfatal-warnings"
     )
     val scala2Options = List(
       "-language:higherKinds",
       "-Xsource:3",
       "-Ywarn-dead-code",
       "-Ywarn-numeric-widen",
-      "-Ywarn-unused:imports",
+      "-Ywarn-unused:imports"
     )
     if (scalaVersion.value == Versions.scala3) commonOptions else commonOptions ++ scala2Options
   },
